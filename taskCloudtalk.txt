@@ -1,0 +1,62 @@
+describe('execute 2 scenarios', function () {
+  let TODO_ITEM_ONE = 'buy some cheese';
+  let TODO_ITEM_TWO = 'feed the cat';
+  const newTodoInputField = 'locator1';
+  const wrapperOfnewTodoInputField = 'locator2';
+
+  beforeEach(() => {
+    const initialRoute = 'https://todomvc.com/examples/vanillajs/';
+    const testOptions = {
+      resolutionX: 1920,
+      resolutionY: 1080,
+    };
+    //visit url
+    cy.visit(initialRoute);
+    cy.wait(2000);
+    //adjust resolution
+    cy.viewport(testOptions);
+    cy.wait(2000);
+  });
+
+  it('Test 1', function () {
+    // enterValue(newTodoInputField, TODO_ITEM_ONE),
+    // pressEnterInInput(newTodoInputField),
+    cy.get(newTodoInputField).type(TODO_ITEM_ONE).type('{enter}');
+
+    // enterValue(newTodoInputField, TODO_ITEM_TWO),
+    // pressEnterInInput(newTodoInputField),
+    cy.get(newTodoInputField).type(TODO_ITEM_TWO).type('{enter}');
+    // assertElementContainsText(todoListItem[0], TODO_ITEM_ONE),
+    cy.get(newTodoInputField)
+      .eq(0)
+      .invoke('val')
+      .then((value) => {
+        expect(value).to.equal(TODO_ITEM_ONE);
+      });
+    // assertElementContainsText(todoListItem[1], TODO_ITEM_TWO),
+    cy.get(newTodoInputField)
+      .eq(1)
+      .invoke('val')
+      .then((value) => {
+        expect(value).to.equal(TODO_ITEM_TWO);
+      });
+    // assertElementsInListCount(todoListItem, 2)
+    cy.get(wrapperOfnewTodoInputField).children().should('have.length', 2);
+  });
+
+  it('Test 2', function () {
+    // checkElementInList(addTodoPageIds.todoListItem, addTodoPageIds.toggle, 0);
+
+    cy.get('.addTodoPageIds')
+      .click()
+      .then(() => {
+        cy.get('[type="radio"]').first().check();
+      });
+    // assertIfElementInListIsToggled(todoListItem[0]);
+    cy.get('.addTodoPageIds')
+      .click()
+      .then(() => {
+        cy.get('[type="radio"]').first().should('be.checked');
+      });
+  });
+});
